@@ -1,0 +1,118 @@
+// ============================================================
+//  Rx-Nimbus — Pharmacy Management System
+//  UML Class Diagram  |  Gleek.io Compatible Syntax
+//  Version : 1.0
+//  File    : rx_nimbus_class_diagram.gleek
+// ============================================================
+
+
+// ── CLASS: Pharmacy ─────────────────────────────────────────
+Pharmacy
+	-pharmacyId: String
+	-name: String
+	-location: String
+	+addMedicine()
+	+removeMedicine()
+	+getMedicines()
+	+searchMedicine()
+
+
+// ── CLASS: Medicine ──────────────────────────────────────────
+Medicine
+	-medicineId: String
+	-name: String
+	-dosage: String
+	-price: Double
+	-stockQuantity: int
+	+getDetails()
+	+updatePrice()
+	+isAvailable()
+	+restock()
+
+
+// ── CLASS: Customer ──────────────────────────────────────────
+Customer
+	-customerId: String
+	-name: String
+	-contactInfo: String
+	-dateOfBirth: Date
+	+placeOrder()
+	+cancelOrder()
+	+getPrescriptions()
+	+getOrderHistory()
+	+updateContactInfo()
+
+
+// ── CLASS: Prescription ──────────────────────────────────────
+Prescription
+	-prescriptionId: String
+	-dateIssued: Date
+	-expiryDate: Date
+	-notes: String
+	+addMedicine()
+	+removeMedicine()
+	+getMedicines()
+	+isValid()
+	+isExpired()
+
+
+// ── CLASS: Doctor ────────────────────────────────────────────
+Doctor
+	-doctorId: String
+	-name: String
+	-specialization: String
+	-licenseNumber: String
+	+issuePrescription()
+	+revokePrescription()
+	+getPrescriptions()
+	+getProfile()
+
+
+// ── CLASS: Order ─────────────────────────────────────────────
+Order
+	-orderId: String
+	-orderDate: Date
+	-status: String
+	-totalAmount: Double
+	-deliveryAddress: String
+	+addMedicine()
+	+removeMedicine()
+	+calculateTotal()
+	+updateStatus()
+	+getOrderSummary()
+	+cancelOrder()
+
+
+// ── ENUM: OrderStatus ────────────────────────────────────────
+OrderStatus
+	PENDING
+	PROCESSING
+	DISPATCHED
+	COMPLETED
+	CANCELLED
+
+
+// ============================================================
+//  RELATIONSHIPS
+// ============================================================
+
+// Pharmacy  --<*>  Medicine   (Composition  | 1 stocks 1..*)
+Pharmacy {1}--<*>{1..*} Medicine: stocks
+
+// Customer  --<*>  Prescription  (Composition | 1 holds 0..*)
+Customer {1}--<*>{0..*} Prescription: holds
+
+// Doctor  -->  Prescription  (Directed Association | 1 issues 0..*)
+Doctor {1}-->{0..*} Prescription: issues
+
+// Prescription  --<>  Medicine  (Aggregation | 0..* contains 1..*)
+Prescription {0..*}--<>{1..*} Medicine: contains
+
+// Customer  --<*>  Order  (Composition | 1 places 0..*)
+Customer {1}--<*>{0..*} Order: places
+
+// Order  --<>  Medicine  (Aggregation | 0..* includes 1..*)
+Order {0..*}--<>{1..*} Medicine: includes
+
+// Order  -.->  OrderStatus  (Dependency)
+Order -.-> OrderStatus: uses
