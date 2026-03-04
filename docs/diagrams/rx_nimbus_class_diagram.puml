@@ -1,0 +1,134 @@
+@startuml Rx-Nimbus Pharmacy Management System
+
+!theme cerulean-outline
+title Rx-Nimbus — Pharmacy Management System\nUML Class Diagram
+
+skinparam classAttributeIconSize 0
+skinparam classFontStyle Bold
+skinparam classFontSize 13
+skinparam classBackgroundColor #F0F8FF
+skinparam classBorderColor #2E86AB
+skinparam classHeaderBackgroundColor #2E86AB
+skinparam classHeaderFontColor #FFFFFF
+skinparam arrowColor #2C3E50
+skinparam arrowThickness 1.5
+skinparam linetype ortho
+skinparam padding 5
+skinparam roundcorner 8
+skinparam noteBackgroundColor #FFFDE7
+skinparam noteBorderColor #F9A825
+
+' ─────────────────────────────────────────
+'  CLASS DEFINITIONS
+' ─────────────────────────────────────────
+
+class Pharmacy {
+  - pharmacyId  : String
+  - name        : String
+  - location    : String
+  --
+  + addMedicine(medicine: Medicine) : void
+  + removeMedicine(medicineId: String) : void
+  + getMedicines() : List<Medicine>
+}
+
+class Medicine {
+  - medicineId  : String
+  - name        : String
+  - dosage      : String
+  - price       : Double
+  --
+  + getDetails() : String
+  + updatePrice(newPrice: Double) : void
+}
+
+class Customer {
+  - customerId  : String
+  - name        : String
+  - contactInfo : String
+  --
+  + placeOrder(order: Order) : void
+  + getPrescriptions() : List<Prescription>
+  + getOrderHistory() : List<Order>
+}
+
+class Prescription {
+  - prescriptionId : String
+  - dateIssued     : Date
+  --
+  + addMedicine(medicine: Medicine) : void
+  + getMedicines() : List<Medicine>
+  + isValid() : Boolean
+}
+
+class Doctor {
+  - doctorId        : String
+  - name            : String
+  - specialization  : String
+  --
+  + issuePrescription(prescription: Prescription) : void
+  + getPrescriptions() : List<Prescription>
+}
+
+class Order {
+  - orderId    : String
+  - orderDate  : Date
+  - status     : OrderStatus
+  --
+  + addMedicine(medicine: Medicine) : void
+  + calculateTotal() : Double
+  + updateStatus(status: OrderStatus) : void
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  CANCELLED
+}
+
+' ─────────────────────────────────────────
+'  RELATIONSHIPS
+' ─────────────────────────────────────────
+
+' Pharmacy has many Medicines
+Pharmacy "1" *-- "1..*" Medicine : stocks >
+
+' Customer has many Prescriptions
+Customer "1" *-- "0..*" Prescription : holds >
+
+' Prescription is issued by a Doctor
+Doctor "1" --> "0..*" Prescription : issues >
+
+' Prescription contains many Medicines
+Prescription "0..*" o-- "1..*" Medicine : contains >
+
+' Customer places many Orders
+Customer "1" *-- "0..*" Order : places >
+
+' Order contains many Medicines
+Order "0..*" o-- "1..*" Medicine : includes >
+
+' Order uses OrderStatus enum
+Order --> OrderStatus : uses >
+
+' ─────────────────────────────────────────
+'  NOTES
+' ─────────────────────────────────────────
+
+note top of Pharmacy
+  Central entity managing
+  medicine inventory.
+end note
+
+note bottom of Prescription
+  A valid prescription is required
+  before dispensing controlled medicines.
+end note
+
+note right of Order
+  OrderStatus tracks the
+  lifecycle of every order.
+end note
+
+@enduml
