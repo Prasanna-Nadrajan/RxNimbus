@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sequence Diagram - RxNimbus</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; padding: 2rem; background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    actor P as Pharmacist
+    participant UI as React Dashboard
+    participant API as API Gateway
+    participant PS as Pharmacy Logic Service
+    participant DB as PostgreSQL
+    participant Label as Label/Invoice Printer
+
+    P->>UI: Scans Prescription Barcode
+    UI->>API: POST /api/v1/prescriptions/process (JWT Token)
+    API->>API: Validate JWT
+    API->>PS: Forward Fulfillment Request
+    PS->>DB: Fetch Prescription Details
+    DB-->>PS: Return Medications List
+
+    loop For each Medication in Prescription
+        PS->>DB: Check Inventory Count
+        alt Stock Available
+            PS->>PS: Check Drug-Drug Interaction (DDI)
+            alt No Interaction
+                PS->>DB: reserveStock(medicineId, qty)
+            else Interaction Found
+                PS-->>UI: ALERT: Interaction detected
+                UI-->>P: Show Warning (Pharmacist Override required)
+                P->>UI: Approve / Decline Interaction
+            end
+        else Out of Stock
+            PS-->>UI: ERROR: Medication Out of Stock
+            Note right of PS: Triggers Automated Restock Workflow
+        end
+    end
+
+    PS->>PS: Calculate Final Bill & Taxes
+    PS->>DB: commitTransaction(PrescriptionID)
+    PS->>DB: updateStockLevels()
+    PS-->>UI: Fulfillment Confirmed (JSON)
+    UI-->>P: Displays Success & Print Dialog
+    UI->>Label: Send Print Command (Label + Invoice)
+    Label-->>P: Physical Output Created
+    </pre>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #F8FAFC;
+    color: #1e293b;
+    font-family: 'Inter', 'Roboto', sans-serif;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer components {
+  /* Flat Design 2.0 utility classes - no gradients */
+  .flat-card {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+  }
+
+  .flat-input {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    padding: 0.5rem 1rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+  }
+  .flat-input:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
+    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) #2563EB;
+    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
+    border-color: transparent;
+  }
+
+  .flat-button {
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+  .flat-button:focus {
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+  }
+
+  .flat-button-primary {
+    background-color: #2563EB;
+    color: #ffffff;
+  }
+  .flat-button-primary:hover {
+    background-color: #1d4ed8;
+  }
+
+  .flat-button-danger {
+    background-color: #DC2626;
+    color: #ffffff;
+  }
+  .flat-button-danger:hover {
+    background-color: #b91c1c;
+  }
+
+  .flat-button-success {
+    background-color: #10B981;
+    color: #ffffff;
+  }
+  .flat-button-success:hover {
+    background-color: #059669;
+  }
+
+  .flat-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.125rem 0.625rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 500;
+  }
+
+  .flat-badge-success {
+    background-color: #d1fae5;
+    color: #065f46;
+  }
+
+  .flat-badge-danger {
+    background-color: #fee2e2;
+    color: #991b1b;
+  }
+
+  .flat-badge-warning {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+}

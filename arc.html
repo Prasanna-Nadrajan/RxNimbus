@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Architecture - RxNimbus</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; padding: 2rem; background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <pre class="mermaid">
+C4Container
+    title Container Diagram for RxNimbus Pharmacy Management System
+
+    Person(pharmacist, "Pharmacist", "Standard user of the system")
+    Person(admin, "System Admin", "Internal IT administrator")
+
+    System_Boundary(c1, "RxNimbus System") {
+        Container(web_app, "Single-Page Application", "React, JavaScript", "Provides the user interface for pharmacy operations")
+        Container(api_gateway, "API Gateway", "Node.js, Express", "Handles request routing, rate limiting, and initial JWT validation")
+        Container(auth_service, "Auth Service", "Node.js, Express", "Manages user authentication, sessions, and JWT issuance")
+        Container(pharmacy_service, "Pharmacy Logic Service", "Node.js, Express", "Handles clinical logic, inventory tracking, and billing processing")
+        
+        ContainerDb(database, "Database", "PostgreSQL", "Stores user data, prescriptions, inventory, and transaction logs")
+        ContainerDb(cache, "Cache", "Redis", "Stores session data and frequently accessed inventory metadata")
+    }
+
+    System_Ext(supplier_sys, "Supplier System", "External system for receiving restock orders")
+
+    Rel(pharmacist, web_app, "Uses", "HTTPS")
+    Rel(admin, web_app, "Uses", "HTTPS")
+
+    Rel(web_app, api_gateway, "Makes API calls to", "JSON/HTTPS")
+    Rel(api_gateway, auth_service, "Validates tokens/Authenticates via", "Internal REST")
+    Rel(api_gateway, pharmacy_service, "Routes pharmacy requests to", "Internal REST")
+
+    Rel(auth_service, database, "Reads/Writes user data", "SQL")
+    Rel(pharmacy_service, database, "Reads/Writes clinical data", "SQL")
+    Rel(pharmacy_service, cache, "Caches inventory stock", "Redis Protocol")
+    
+    Rel(pharmacy_service, supplier_sys, "Sends restock requests to", "Webhook / REST")
+    </pre>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>

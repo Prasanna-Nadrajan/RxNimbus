@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Diagram - RxNimbus</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; padding: 2rem; background-color: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <pre class="mermaid">
+classDiagram
+    direction TB
+    
+    class User {
+        +UUID id
+        +String username
+        +String passwordHash
+        +String role
+        +Date createdAt
+        +login() bool
+        +logout() void
+    }
+
+    class Pharmacist {
+        +String licenseNumber
+        +validatePrescription(Prescription p) bool
+        +processBilling(Bill b) Transaction
+    }
+
+    class Admin {
+        +manageUsers()
+        +viewSystemLogs()
+    }
+
+    class Patient {
+        +UUID patientId
+        +String fullName
+        +Date dateOfBirth
+        +String contactInfo
+        +List~String~ allergies
+        +viewMedicalHistory() List~Prescription~
+    }
+
+    class Prescription {
+        +UUID prescriptionId
+        +Date issueDate
+        +String doctorName
+        +String status
+        +addMedication(PrescriptionItem item)
+        +isValid() bool
+    }
+
+    class PrescriptionItem {
+        +int quantity
+        +String dosageInstructions
+        +checkInteraction(List~PrescriptionItem~ others) bool
+    }
+
+    class InventoryItem {
+        +UUID medicineId
+        +String name
+        +String genericName
+        +int stockLevel
+        +int reorderThreshold
+        +Date expiryDate
+        +Float unitPrice
+        +updateStock(int qty) bool
+        +checkExpiry() bool
+    }
+
+    class Supplier {
+        +UUID supplierId
+        +String companyName
+        +String contactEmail
+        +receiveOrder(RestockOrder order)
+    }
+
+    class RestockOrder {
+        +UUID orderId
+        +Date orderDate
+        +String status
+        +addOrderLine(InventoryItem item, int qty)
+        +sendToSupplier()
+    }
+
+    class Bill {
+        +UUID billId
+        +Float totalAmount
+        +Float taxAmount
+        +Date dateGenerated
+        +generateInvoice() String
+    }
+
+    class Transaction {
+        +UUID transactionId
+        +String paymentMethod
+        +String status
+        +commitTransaction() bool
+    }
+
+    %% Relationships
+    User <|-- Pharmacist : Inheritance
+    User <|-- Admin : Inheritance
+    
+    Patient "1" --> "*" Prescription : receives
+    Prescription "1" *-- "1..*" PrescriptionItem : contains
+    PrescriptionItem "*" --> "1" InventoryItem : references
+    
+    Pharmacist "1" --> "*" Prescription : processes
+    Pharmacist "1" --> "*" Bill : creates
+    
+    Bill "1" --> "1" Transaction : paid via
+    Prescription "1" --> "1" Bill : generates
+    
+    InventoryItem "*" --> "1" Supplier : supplied by
+    Supplier "1" --> "*" RestockOrder : fulfills
+    RestockOrder "*" --> "1..*" InventoryItem : requests
+    </pre>
+    <script type="module">
+      import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+      mermaid.initialize({ startOnLoad: true });
+    </script>
+</body>
+</html>
